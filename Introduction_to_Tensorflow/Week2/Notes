@@ -1,0 +1,120 @@
+# Week 2 
+========
+
+** Computer Vision **
+===================
+
+Computer Vision seems to be a very complicated problem for computer even though for 
+humans it is very intutive to see a person and judge what does he look like or what 
+is he wearing. This is because the computers have to figure out the colors in each 
+of the pixels, check various boundary conditions.
+
+While learning Computer vision one might come across certain terminology called Haar 
+like features.. this was one of the first algorithm in the development of the computer 
+vision architecture. Here we made the use of GRAY images(GrayScale) to detect the boundaries of 
+various surfaces. 
+
+Consider your nose. When light falls on it from a particular angle it is going to cast
+a shadow. In the greyscale the region of this casted shadow appears black while the nose
+would appear white. This kind of techniques form the basis of boundary detection in computer vision.
+
+This would require the computer to scan each and every pixel of the image using a sliding window algorithm
+to see if this particular Haar-like feature is present or not. This adds a huge computation cost to the model.
+
+Thus this problem which seems very intutive to humans take up a lot of effort of the machines.
+
+
+**How one solves this complicated problem?**
+=========================================
+One way to do that is to take a lot of pictures of and label them. and then have computer
+figure out the patterns. 
+
+Fashion MNIST provides one such databse for training a large number of labelled images to 
+extract the required weights and biases for our neural network.
+
+From MNIST Github:- 
+MNIST is too easy. Convolutional nets can achieve 99.7% on MNIST. 
+Classic machine learning algorithms can also achieve 97% easily. 
+Check out our side-by-side benchmark for Fashion-MNIST vs. MNIST, 
+Read "Most pairs of MNIST digits can be distinguished pretty well by just one pixel."
+MNIST is overused. 
+In this April 2017 Twitter thread, Google Brain research scientist and deep learning expert Ian Goodfellow calls for people to move away from MNIST.
+MNIST can not represent modern CV tasks, as noted in this April 2017 Twitter thread, deep learning expert/Keras author François Chollet.
+
+** What are the uses of labels **
+===============================
+
+Labels help prevent bias in the data. Since computer work well with numbers we are expected to get
+more accurate result if we label our object as a number instead of a text label, which if mentioned in 
+english might create another kind (language) bias in our data..
+
+Best_AI_Practices_Google[https://ai.google/responsibilities/responsible-ai-practices/]
+
+** What is precision and recall? **
+=================================
+High precision means that an algorithm return more relevant results than the irrelevant ones
+and high recall means that an algo returns most of the relevant results.
+
+ML models will reflect the data they are trained on, so analyze your raw data carefully to ensure you understand it. 
+In cases where this is not possible, e.g., with sensitive raw data, understand your 
+input data as much as possible while respecting privacy
+
+** Why do normalization of images using element wise division? ** (Check notebook for an example case)
+================================================================
+
+Since our model works better with normalized data. Division by 255 is a simple normalization
+method to normalize the values between 0 and 1.
+
+Use sparse categorical crossentropy when your classes are mutually exclusive (e.g. when each sample belongs exactly to one class) 
+and categorical crossentropy when one sample can have multiple classes or labels are soft probabilities (like [0.5, 0.3, 0.2]).
+
+**Image Normalization**
+=======================
+
+The idea behind image normalization is not only to remove noise but at the same time to bring the image into a range of intensity values that is 'normal'...
+(meaning statistically it follows a normal distribution as far as possible),physically less stressful to our (visual) sense. 
+The mean value will depend on the actual intensity distribution in the image...but the aim will be to ultimately state this mean with high confidence level.
+
+**Histogram Stretching**
+=======================
+Histogram stretching involves modifying the brightness (intensity) values of pixels in the image according to some mapping function
+that specifies an output pixel brightness value for each input pixel brightness value. For a grayscale digital image, this process is straightforward.
+
+One seeing the model trained when the image data has not been normalized we observe a 
+worse accuracy than the one which is normalized
+
+
+
+#### What would happen if you remove the Flatten() layer. Why do you think that's the case?
+You get an error about the shape of the data. It may seem vague right now, but it reinforces the rule of thumb that the first layer in your network should be the same shape as your data. 
+Right now our data is 28x28 images, and 28 layers of 28 neurons would be infeasible, so it makes more sense to 'flatten' that 28,28 into a 784x1. 
+Instead of writng all the code to handle that ourselves, we add the Flatten() layer at the begining, and when the arrays are loaded into the model later, 
+they'll automatically be flattened for us.
+
+
+#### Consider the final (output) layers. Why are there 10 of them? What would happen if you had a different amount than 10? For example, try training the network with 5.
+
+We get an error as soon as it finds an unexpected value. Another rule of thumb -- the number of neurons in the last layer should match the number of classes 
+you are classifying for. In this case it's the digits 0-9, so there are 10 of them, hence you should have 10 neurons in your final layer.
+
+
+#### Consider the effects of additional layers in the network. What will happen if you add another layer between the one with 512 and the final layer with 10?
+==============================================================================================================================================================
+There isn't a significant impact -- because this is relatively simple data. For far more complex data (including color images to be classified 
+as flowers that you'll see in the next lesson), extra layers are often necessary.
+
+If we train our model for a significantly longer number of epochs. One of the dire side effects we may encounter is overfitting the model.
+An overfitted model seems too good to be true and it is. It would work marvellously on our training dataset but upon model evaluation in testing case we would see a very poor performance. This is a sign of "Overfitting".
+
+### Using Callbacks to control training (Check example notebook)
+========================================
+
+We don't need to hard code the number of epochs that we have to call our training model
+On attaining the desired accuracy we can callback to the code fucntion and see the metrics
+and if they match we can cancel the training at that point.
+
+Since the current loss is available in the logs we can query it for certain amount and break the loop accordingly
+
+using the on_epoch_end function called upon init
+
+
