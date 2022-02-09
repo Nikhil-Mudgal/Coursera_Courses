@@ -1,5 +1,6 @@
 # Introduction to Tensorflow for Machine Learning and Deep Learning
 ===================================================================
+
 For applications where we cna figure out the rules to do something 
 we should avoid using ML
 
@@ -54,7 +55,7 @@ Simplest possible is the one which has only 1 neuron.
 Dense -- to define a layer of connected neurons.
 
 Since the successive layers are defined in a sequence so we use the "Sequential" method.
-input_shape = [1] -- shape of the input laye
+input_shape = [1] -- shape of the input layer
 // for any model we need to enter an input_shape or have knowledge about the shape in which the model was build 
 
 for example Unet architecture was build using 
