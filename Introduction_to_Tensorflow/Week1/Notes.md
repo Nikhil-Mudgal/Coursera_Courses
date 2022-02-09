@@ -54,7 +54,7 @@ Simplest possible is the one which has only 1 neuron.
 Dense -- to define a layer of connected neurons.
 
 Since the successive layers are defined in a sequence so we use the "Sequential" method.
-input_shape = [1] -- shape of the input layer
+input_shape = [1] -- shape of the input laye
 // for any model we need to enter an input_shape or have knowledge about the shape in which the model was build 
 
 for example Unet architecture was build using 
