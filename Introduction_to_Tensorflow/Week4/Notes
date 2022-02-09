@@ -1,0 +1,120 @@
+Week-4 
+======
+
+ConvNet's on Real Image(For image detection)
+
+Image Segmentation and ConvNets are being used currently in self driving cars .
+
+Machine learning to detect diseases in plants 
+
+SSD in MobNet-V2(casava detection)
+
+Uses
+====
+To improve yeild to protect the corps and to make good use of the crops we are using.
+
+ 
+How to create labels and images for a particular task ? 
+
+ImageDatagenerator for Tensorflow 
+
+Images-
+	  - Training - Horses - images
+				 - Humans - images 
+	  - Validation  - Horses - several images 
+				 - Humans - several images.
+
+When we use ImageDatagenerator for Tensorflow pointing to a directory its sub directory
+automatically creates labels for us as in the directory above.
+ 
+The ImageDatagenerator creates a feeder for the directory and autolabels the image for us
+
+# declaration and calling from the API
+from tensorflow.keras.processing.image import ImageDatagenerator
+# instantiate
+train_datagen = ImageDatagenerator(rescale=1./255)
+we can then use the flow_from_directory method to load in the images from our desired
+directory.
+
+train_generator = train_datagen.flow_from_directory(
+			train_dir,
+			target_size =(300,300),
+			batch_size=128,
+			class_model="binary")
+
+This loads the images from the train_dir, converts them to the desired size(target_size)
+while the loading and creates batches of images to work with our dataset.
+
+Since one of the drawbacks of training images is that they must be of the same size.
+The ImageDatagenerator already provides a method for resizing the images to the size we want them to train at,
+the images are also divided into batches.
+The advantage of doing these operations at run time is that we can then experiment with these
+operations without affecting our source data.
+ 
+How does batches aid learning ? 
+
+More efficeint and how to check experiment them 
+
+class_mode  ?
+binary classifier as we are going to dealing with 2 things only humans and horses
+other options to be discussed later in the coursel.
+
+
+validation generator should be exactly the same except it must contain the location of the 
+validation directory.
+
+
+This time we are going to use loss as binary_cross_entropy
+and optimizer as tf.keras.optimizers.RMSprop
+where we can experiment with the learning rate to get our model better accuracy.
+
+Here we have to call model.fit_generator to train our image "generator" data.
+
+history = model.fit_generator(
+		train_generator, # this streams the image from the training dir
+		steps_per_epoch=8, # 1024 image loading at 128 at a time so we need to do 8 batches 
+		epochs =15, # number of epochs to train for 
+		valdiation_data=validation_generator, # valdiation set created earlier
+		valdiation_steps= 8, # 256 images in batches of 23 so again 8 steps 
+		verbose=2 # how much to display when the model is trained for 
+		) 
+
+How do we prrdict the image now ? 
+
+
+we are going to use the code below to predict our images, 
+
+import numpy as np
+from google.colab import files
+from keras.preprocessing import image 
+
+uploaded = files.upload()
+
+for fn in uploaded.keys():
+
+	# predicting image 
+	path  = '/content' + fn 
+	img = image.load_img(path,target_size = (300,300)) # remember to keep the target size same as during training  
+	x = image.img_to_array(img)
+	x = np.expand_dims(x,axis = 0)
+	
+	image = np.vstack([x]) # lines in the loop preprocess the image to prepare for model prediction.
+	classes =model.predict(image,batch_size =10)
+	print(classes[0])
+	if classes[0] > 0.5:
+	print(fn + "is a human")
+	else:
+	print (fn  + "is a horse")
+	
+Training ConvNet's on large dimension images slows down the training 
+and so we can fasten the training by compressing our images.
+
+But what other impacts dows this present to our images ?
+
+Training becomes fast and accuracy and val_accuracy are very high (~0.99).
+This might give us a hint that our model is overfitting on the training images.
+
+
+Putting it to the test we see this gives out some false negatives which gives us the idea that we should 
+test our images in a largeer valdiation dataset to see of our model is actually predicting right or wrong.
+
