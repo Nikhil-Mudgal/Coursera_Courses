@@ -1,0 +1,57 @@
+Week-3
+======
+
+Convolution neural networks (Conv Nets)
+======================================
+
+What is convolution layer?
+
+It is a filter that is passed to an image which basically spots the features 
+present in that particualr image and give an output in the form of a convolution map.
+
+
+This filter passed on to the image changes the underlying image. 
+
+If the current pixel value is 192. We take a note of the neighbouring pixel values 
+and multiply the corresponding pixel values in the image. We then get a  New_pixel_Value 
+for that pixel which is equal to the sum of mulitple of all the corresponding pixel values
+passed over the convolution filter. 
+
+The idea is that some convolutions change the image in a certain way that some features
+get emphasized. 
+
+When combined with pooling they can compress the size of the image by keeping the biggest value 
+among the 4 neighbouring pixel values. So 16 pixels can be converted to 4 pixels by looking them at 
+2x 2 grids and taking the largest values. This preserves the features highlighted by the convolution
+and simultaneously quartering the size of the image.
+
+We use MaxPooling2D layer to obtain the maximum value of our 2x2 sqaure or the 4 pixels that we are
+going through.
+
+using model.summary() method we can check the shapes of respective layers in the convolutional
+dataset.
+
+
+Notice that the shape of the output after the Conv2D filter is applied is (None,26,26,64)
+
+Why is the size of the image reduced by 2 ?
+
+Keeping in mind that we are using a 3 x 3 convolution filter. While scanning an image 
+starting at the corner to obtain the required values we see that the for a single pixel margin on at the width
+and the height both at the corner we cannot use the convolution filter as they do not have the 
+required number of neighbouring cells so we are basically removing 2 pixels margin from 
+the width(top and bottom) and height(left and right). This giving us a 26 x 26 size image.
+
+After this we apply a 2x2 for a 4 pixel MaxPooling2D layer that basically takes out the largest number of the 4 pixels
+and so the size of the image is just halved.
+so outut turns from (26,26) - > (13,13)
+
+Again applying the same combination of MaxPooling2D and Conv2D we obtain a(5x5) image with 64 filters,
+so there are 64 new images of (5x5) being fed into our neural network
+
+Flatten() this and we obtain 64x5x5 = 1600 elements in it. This number is defined by the parameters
+we have set when defining the convolutional 2D layers.
+
+
+Thus training will be slower. But now the question is will this be more accurate than our 
+simple Dense Models ?
